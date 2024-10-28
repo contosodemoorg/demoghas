@@ -23,13 +23,18 @@ $(document).ready(function(){
     });
   }
 
+  function sanitizeInput(input) {
+    var element = document.createElement('div');
+    element.innerText = input;
+    return element.innerHTML;
+  }
+
   function fetchComments() {
     $.get("http://localhost:8080/comments", function(data){
       $('#comments-container').html('')
       data.forEach(function(comment){
-        if (comment.body.indexOf("<script>") < 0) {
-          $("#comments-container").append(template(comment));
-        }
+        comment.body = sanitizeInput(comment.body);
+        $("#comments-container").append(template(comment));
       });
       setupDeleteCommentHandler();
     });
@@ -42,7 +47,7 @@ $(document).ready(function(){
     $.ajax({
       type: "POST",
       url: "http://localhost:8080/comments",
-      data: JSON.stringify({username: username, body: comment}),
+      data: JSON.stringify({username: username, body: sanitizeInput(comment)}),
       dataType: "json",
       contentType: "application/json",
     }).done(function(){
