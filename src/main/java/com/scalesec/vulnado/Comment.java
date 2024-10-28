@@ -83,4 +83,8 @@ public class Comment {
     pStatement.setTimestamp(4, this.created_on);
     return 1 == pStatement.executeUpdate();
   }
+
+  private static String sanitizeInput(String input) {
+    return input.replaceAll("[^a-zA-Z0-9 ]", "");
+  }
 }
